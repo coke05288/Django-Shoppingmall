@@ -9,3 +9,4 @@ def index(request):
 class RegisterView(FormView):
     template_name = "register.html"
     form_class = RegisterFrom
+    success_url = '/'

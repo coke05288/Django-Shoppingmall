@@ -1,4 +1,5 @@
 from django import forms
+from .models import User
 
 class RegisterFrom(forms.Form):
     email = forms.EmailField(
@@ -22,3 +23,20 @@ class RegisterFrom(forms.Form):
         widget=forms.PasswordInput,
         label='비밀번호 확인',
     )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        c_email = cleaned_data.get('email')
+        c_password = cleaned_data.get('password')
+        c_re_password = cleaned_data.get('re_password')
+
+        if c_password and c_re_password:
+            if c_password != c_re_password:
+                self.add_error('password', '비밀번호가 일치하지 않습니다.')
+                self.add_error('re_password', '비밀번호가 일치하지 않습니다.')
+            else:
+                temp_user = User(
+                    email = c_email,
+                    password = c_password
+                )
+                temp_user.save()
